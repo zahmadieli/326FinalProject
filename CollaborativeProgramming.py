@@ -46,7 +46,7 @@ class CognitiveDistortionAnalyzer:
         """
         Detects mind reading cognitive distortions in the input text.
 
-        Primary Author: Zaynab
+        Primary Author: Zainab
         Techniques Claimed:
         - Optional parameters
         - Conditional expressions
@@ -72,7 +72,7 @@ analyzer.distortion_patterns = {
 result = analyzer.identify_overgeneralization("I always fail at everything.")
 print("Overgeneralization detected:", result)  
 
-# Testing Zaynab’s Function
+# Testing Zainab’s Function
 print("\nTesting detect_mind_reading:")
 analyzer.distortion_patterns = {
     'mind_reading': ['they think', 'they believe', 'they feel']
