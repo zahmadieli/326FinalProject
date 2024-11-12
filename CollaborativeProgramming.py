@@ -1,6 +1,6 @@
 import json
 import re
-
+ 
 class CognitiveDistortionAnalyzer:
     def __init__(self):
         """
@@ -12,7 +12,8 @@ class CognitiveDistortionAnalyzer:
                                 detecting cognitive distortions.
         """
         self.distortion_patterns = {}
-
+        
+    # Josh's Function 
     def load_distortion_patterns(self):
         """
         Loads cognitive distortion patterns from a JSON file into a dictionary 
@@ -40,7 +41,7 @@ class CognitiveDistortionAnalyzer:
         except json.JSONDecodeError:
             print("Error: The file 'distortion_patterns.json' is not valid JSON.")
 
-
+    # John's Function 
     def identify_overgeneralization(self, text):
         """
         Analyzes the text to detect overgeneralization cognitive distortions.
@@ -72,7 +73,7 @@ class CognitiveDistortionAnalyzer:
                 return True
         return False
 
-    
+    # Zainab's Function 
     def detect_mind_reading(self, text):
         """
         Detects mind reading cognitive distortions in the input text.
