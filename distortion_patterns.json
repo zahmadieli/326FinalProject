@@ -108,5 +108,35 @@
             "he ignored me"
         ],
         "explanation": "Making negative interpretations without evidence. For example, 'She didn't reply, so she must be angry with me.'"
+    },
+    "magnification": {
+        "patterns": [
+            "huge problem",
+            "massive issue",
+            "overwhelming",
+            "unbearable",
+            "impossible to handle"
+        ],
+        "explanation": "Exaggerating the importance of negative events or minimizing the importance of positive ones."
+    },
+    "fortune_telling": {
+        "patterns": [
+            "I know it will",
+            "it's going to be",
+            "I'm sure that",
+            "there's no way",
+            "it's bound to"
+        ],
+        "explanation": "Predicting negative outcomes without sufficient evidence."
+    },
+    "mental_filter": {
+        "patterns": [
+            "focus on the bad",
+            "ignore the good",
+            "only remember",
+            "can't see past",
+            "fixate on"
+        ],
+        "explanation": "Focusing exclusively on negative aspects while ignoring positive ones."
     }
 }
