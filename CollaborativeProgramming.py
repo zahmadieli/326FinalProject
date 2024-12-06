@@ -103,8 +103,8 @@ class CognitiveDistortionAnalyzer:
         """
         Detects references to suicidal thoughts in the input text.
 
-        Primary Author: Zaynab
-        Techniques: regular expressions, optional parameters/keyword arguments
+        Primary Author: Zainab
+        Techniques: regular expressions
         """
         suicidal_patterns = [
             "kill myself", "want to die", "suicidal", "end my life",
@@ -122,7 +122,7 @@ class CognitiveDistortionAnalyzer:
         """
         Filters out unrealistic or absolute statements.
 
-        Primary Author: Zaynab
+        Primary Author: Zainab
         Technique: optional parameters/keyword arguments
 
         Non-trivial logic: Check absolute terms and unrealistic phrases. Intensity > 1 makes it stricter.
