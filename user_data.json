@@ -1,11 +1,56 @@
 [
     {
-        "timestamp": "2024-12-02T19:57:36.721196",
+        "timestamp": "2024-12-05T21:47:24.521697",
         "mood": "happy",
         "responses": [
-            "My friend got into her dream school ",
-            "no"
+            "I am happy because: Enjoying a pleasant activity/environment"
         ],
-        "distortions": []
+        "distortions": [],
+        "intensity": 5
+    },
+    {
+        "timestamp": "2024-12-05T21:47:47.439445",
+        "mood": "confused",
+        "responses": [
+            "if was very difficult to understand my material for my exam"
+        ],
+        "distortions": [],
+        "intensity": 4
+    },
+    {
+        "timestamp": "2024-12-05T21:48:22.825120",
+        "mood": "anxious",
+        "responses": [
+            "my exam"
+        ],
+        "distortions": [],
+        "intensity": 4
+    },
+    {
+        "timestamp": "2024-12-05T21:48:32.246710",
+        "mood": "angry",
+        "responses": [
+            "I lost money"
+        ],
+        "distortions": [],
+        "intensity": 1
+    },
+    {
+        "timestamp": "2024-12-05T21:48:47.899461",
+        "mood": "excited",
+        "responses": [
+            "9"
+        ],
+        "distortions": [],
+        "intensity": 5
+    },
+    {
+        "timestamp": "2024-12-05T21:59:32.355711",
+        "mood": "anxious",
+        "responses": [
+            "my exams"
+        ],
+        "distortions": [],
+        "intensity": 5
     }
 ]
