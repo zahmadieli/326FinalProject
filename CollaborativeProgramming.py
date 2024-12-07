@@ -4,6 +4,7 @@ import datetime
 import os
 import sys
 import matplotlib.pyplot as plt
+import pandas as pd
 from abc import ABC, abstractmethod
 from collections import Counter
 
@@ -96,7 +97,9 @@ class CognitiveDistortionAnalyzer:
             for d in self.distortions:
                 found, pattern = d.match(sentence)
                 if found:
-                    detected_distortions.append((d.name, pattern))
+                    # Remove \b word boundaries for display
+                    display_pattern = re.sub(r'\\b', '', pattern)
+                    detected_distortions.append((d.name, display_pattern))
         return detected_distortions
 
     def detect_suicidal_thoughts(self, text, strict=False):
@@ -247,24 +250,17 @@ class CognitiveDistortionAnalyzer:
         plt.tight_layout()
         plt.show()
 
-    def visualize_emotion_distribution(self):
+    def display_mood_table(self):
         """
-        Visualizes the distribution of emotions for the current week using a pie chart.
+        Displays a table of moods and their corresponding intensity using pandas.
         """
-        emotion_distribution = self.get_emotion_distribution()
-
-        if not emotion_distribution:
-            print("No data in the current week to visualize.")
+        if not self.user_data:
+            print("No user data available to display.")
             return
 
-        emotions = list(emotion_distribution.keys())
-        counts = list(emotion_distribution.values())
-
-        plt.figure(figsize=(10, 7))
-        plt.pie(counts, labels=emotions, autopct='%1.1f%%', startangle=90)
-        plt.title("Emotion Distribution for the Current Week")
-        plt.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle
-        plt.show()
+        data = [(entry['mood'], entry['intensity']) for entry in self.user_data]
+        df = pd.DataFrame(data, columns=['Mood', 'Intensity'])
+        print(df.to_string(index=False))
 
 
 # User Input Handling Class
@@ -342,9 +338,10 @@ def main():
             print("\nInstructions:")
             print("1. Type 'start' to begin a new session.")
             print("2. Type 'visualize timeline' to see your mood intensity over the current week.")
-            print("3. Type 'visualize charts' to see the distribution of your emotions for the current week.")
+            print("3. Type 'table' to see a table of your moods and their intensities.")
             print("4. Type 'export' to save your data.")
-            print("5. Type 'exit' to quit.\n")
+            print("5. Type 'clear' to delete all your data.")
+            print("6. Type 'exit' to quit.\n")
         elif cmd == 'exit':
             analyzer.save_user_data()
             print("Goodbye!")
@@ -399,14 +396,21 @@ def main():
             print(mood_advice.get(mood, "Take some time to reflect on your feelings and consider what might help improve your mood."))
         elif cmd == 'visualize timeline':
             analyzer.visualize_user_mood_timeline()
-        elif cmd == 'visualize chart':
-            analyzer.visualize_emotion_distribution()
+        elif cmd == 'table':
+            analyzer.display_mood_table()
         elif cmd == 'export':
             analyzer.save_user_data()
             print("Your data has been saved.\n")
+        elif cmd == 'clear':
+            confirm = input("Are you sure you want to clear all your data? This action cannot be undone. (yes/no): ").strip().lower()
+            if confirm == 'yes':
+                analyzer.clear_user_data()
+            else:
+                print("Data clearing cancelled.")
         else:
             print("Invalid command. Type 'help' for instructions.\n")
 
 if __name__ == "__main__":
     main()
+
 
