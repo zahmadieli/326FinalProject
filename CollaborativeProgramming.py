@@ -10,7 +10,9 @@ import seaborn as sns
 
 class BaseDistortion:
     """
-    Base class for a cognitive distortion.
+    Abstract base class for a cognitive distortion.
+    Primary Author: John
+    Techniques Claimed: magic methods (other than __init__) - __str__
     """
     def __init__(self, name, patterns, explanation):
         self.name = name
@@ -19,6 +21,7 @@ class BaseDistortion:
 
     def __str__(self):
         """
+        Primary Author: John
         Technique: magic methods (other than __init__)
         Returns a user-friendly string representation of the distortion.
         """
@@ -26,7 +29,7 @@ class BaseDistortion:
 
     def match(self, text):
         """
-        This method should be overridden by subclasses.
+        Should be overridden by subclasses.
         """
         raise NotImplementedError("Subclasses must implement 'match'.")
 
@@ -49,6 +52,8 @@ class EmotionalReasoningDistortion(BaseDistortion):
 class CognitiveDistortionAnalyzer:
     """
     Analyzes user input for cognitive distortions and handles user data.
+
+    Composition: Holds a list of BaseDistortion instances.
     """
 
     def __init__(self):
@@ -59,6 +64,8 @@ class CognitiveDistortionAnalyzer:
     def load_distortions_data(self):
         """
         Loads cognitive distortions from 'distortion_patterns.json' and sets up distortion objects.
+
+        Primary Author: Josh
         Techniques: with statements, comprehensions
         """
         try:
@@ -96,6 +103,9 @@ class CognitiveDistortionAnalyzer:
     def detect_suicidal_thoughts(self, text, strict=False):
         """
         Detects references to suicidal thoughts in the input text.
+
+        Primary Author: Zainab
+        Techniques: regular expressions
         """
         suicidal_patterns = [
             "kill myself", "want to die", "suicidal", "end my life",
@@ -112,7 +122,11 @@ class CognitiveDistortionAnalyzer:
     def filter_unrealistic_statements(self, text, intensity=1):
         """
         Filters out unrealistic or absolute statements.
+
+        Primary Author: Zainab
         Technique: optional parameters/keyword arguments
+
+        Non-trivial logic: Check absolute terms and unrealistic phrases. Intensity > 1 makes it stricter.
         """
         words = text.lower().split()
         absolute_terms = {"always", "never", "forever", "everything", "nothing"}
@@ -127,6 +141,8 @@ class CognitiveDistortionAnalyzer:
     def add_user_entry(self, mood, responses, intensity):
         """
         Adds a user entry with mood, responses, intensity and detected distortions.
+
+        Intensity is a numeric value (1-5).
         """
         combined_text = ' '.join(responses)
         distortions = self.analyze_text(combined_text)
@@ -143,6 +159,9 @@ class CognitiveDistortionAnalyzer:
     def save_user_data(self):
         """
         Saves user_data to a JSON file.
+
+        Primary Author: John
+        Technique: json.dump()
         """
         try:
             with open('user_data.json', 'w') as f:
@@ -164,6 +183,8 @@ class CognitiveDistortionAnalyzer:
     def aggregate_distortion_statistics(self):
         """
         Aggregates frequency of detected distortions from user_data.
+
+        Primary Author: Josh
         Technique: comprehensions
         """
         all_distortions = [d for entry in self.user_data for d in entry['distortions']]
@@ -267,14 +288,14 @@ class CognitiveDistortionAnalyzer:
     def clear_user_data(self):
         """
         Clears all user data.
+
+        Adding plt.close('all') to close any open figure windows.
         """
         self.user_data = []
         if os.path.exists('user_data.json'):
             os.remove('user_data.json')
-        # Close all open figure windows
-        plt.close('all')
+        plt.close('all')  # Close all open figures
         print("All user data has been cleared.")
-
 
 # User Input Handling Class
 
