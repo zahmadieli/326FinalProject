@@ -2,19 +2,15 @@ import json
 import re
 import datetime
 import os
-import sys
 import matplotlib.pyplot as plt
 import pandas as pd
-from abc import ABC, abstractmethod
-from collections import Counter
+import seaborn as sns
 
 # Distortion Classes
 
-class BaseDistortion(ABC):
+class BaseDistortion:
     """
-    Abstract base class for a cognitive distortion.
-    Primary Author: John
-    Techniques Claimed: magic methods (other than __init__) - __str__
+    Base class for a cognitive distortion.
     """
     def __init__(self, name, patterns, explanation):
         self.name = name
@@ -23,17 +19,16 @@ class BaseDistortion(ABC):
 
     def __str__(self):
         """
-        Primary Author: John
         Technique: magic methods (other than __init__)
         Returns a user-friendly string representation of the distortion.
         """
         return f"Distortion: {self.name}\nExplanation: {self.explanation}"
 
-    @abstractmethod
     def match(self, text):
         """
-        Abstract method to detect if this distortion appears in the given text.
+        This method should be overridden by subclasses.
         """
+        raise NotImplementedError("Subclasses must implement 'match'.")
 
 class OvergeneralizationDistortion(BaseDistortion):
     def match(self, text):
@@ -54,8 +49,6 @@ class EmotionalReasoningDistortion(BaseDistortion):
 class CognitiveDistortionAnalyzer:
     """
     Analyzes user input for cognitive distortions and handles user data.
-
-    Composition: Holds a list of BaseDistortion instances.
     """
 
     def __init__(self):
@@ -66,8 +59,6 @@ class CognitiveDistortionAnalyzer:
     def load_distortions_data(self):
         """
         Loads cognitive distortions from 'distortion_patterns.json' and sets up distortion objects.
-
-        Primary Author: Josh
         Techniques: with statements, comprehensions
         """
         try:
@@ -105,9 +96,6 @@ class CognitiveDistortionAnalyzer:
     def detect_suicidal_thoughts(self, text, strict=False):
         """
         Detects references to suicidal thoughts in the input text.
-
-        Primary Author: Zainab
-        Techniques: regular expressions
         """
         suicidal_patterns = [
             "kill myself", "want to die", "suicidal", "end my life",
@@ -124,11 +112,7 @@ class CognitiveDistortionAnalyzer:
     def filter_unrealistic_statements(self, text, intensity=1):
         """
         Filters out unrealistic or absolute statements.
-
-        Primary Author: Zainab
         Technique: optional parameters/keyword arguments
-
-        Non-trivial logic: Check absolute terms and unrealistic phrases. Intensity > 1 makes it stricter.
         """
         words = text.lower().split()
         absolute_terms = {"always", "never", "forever", "everything", "nothing"}
@@ -143,8 +127,6 @@ class CognitiveDistortionAnalyzer:
     def add_user_entry(self, mood, responses, intensity):
         """
         Adds a user entry with mood, responses, intensity and detected distortions.
-
-        Intensity is a numeric value (1-5).
         """
         combined_text = ' '.join(responses)
         distortions = self.analyze_text(combined_text)
@@ -161,9 +143,6 @@ class CognitiveDistortionAnalyzer:
     def save_user_data(self):
         """
         Saves user_data to a JSON file.
-
-        Primary Author: John
-        Technique: json.dump()
         """
         try:
             with open('user_data.json', 'w') as f:
@@ -185,12 +164,12 @@ class CognitiveDistortionAnalyzer:
     def aggregate_distortion_statistics(self):
         """
         Aggregates frequency of detected distortions from user_data.
-
-        Primary Author: Josh
         Technique: comprehensions
         """
         all_distortions = [d for entry in self.user_data for d in entry['distortions']]
-        counts = {dist: all_distortions.count(dist) for dist in set(all_distortions)}
+        counts = {}
+        for dist in all_distortions:
+            counts[dist] = counts.get(dist, 0) + 1
         return counts
 
     def get_emotion_distribution(self):
@@ -201,19 +180,18 @@ class CognitiveDistortionAnalyzer:
         start_of_week = today - datetime.timedelta(days=today.weekday())
         end_of_week = start_of_week + datetime.timedelta(days=6)
 
-        emotions = []
+        emotion_counts = {}
         for entry in self.user_data:
             ts = datetime.datetime.fromisoformat(entry['timestamp'])
             day = ts.date()
             if start_of_week <= day <= end_of_week:
-                emotions.append(entry['mood'])
-
-        emotion_counts = Counter(emotions)
-        return dict(emotion_counts)
+                mood = entry['mood']
+                emotion_counts[mood] = emotion_counts.get(mood, 0) + 1
+        return emotion_counts
 
     def visualize_user_mood_timeline(self):
         """
-        Visualizes intensity over the current week using a line plot.
+        Visualizes mood entries as a scatter plot and overlays average intensity as a bar plot.
         """
         if not self.user_data:
             print("No user data to visualize.")
@@ -223,31 +201,55 @@ class CognitiveDistortionAnalyzer:
         start_of_week = today - datetime.timedelta(days=today.weekday())
         end_of_week = start_of_week + datetime.timedelta(days=6)
 
-        date_intensity = {}
+        # Collect data for the current week
+        mood_entries = []
         for entry in self.user_data:
             ts = datetime.datetime.fromisoformat(entry['timestamp'])
             day = ts.date()
             if start_of_week <= day <= end_of_week:
-                if day not in date_intensity:
-                    date_intensity[day] = []
-                date_intensity[day].append(entry['intensity'])
+                mood_entries.append({'date': day, 'intensity': entry['intensity'], 'mood': entry['mood']})
 
-        if not date_intensity:
+        if not mood_entries:
             print("No data in the current week to visualize.")
             return
 
-        sorted_dates = sorted(date_intensity.keys())
-        avg_intensities = [sum(date_intensity[d]) / len(date_intensity[d]) for d in sorted_dates]
+        # Convert to DataFrame for Seaborn plotting
+        df = pd.DataFrame(mood_entries)
+        
+        # Convert 'date' column to string to avoid type issues in plotting
+        df['date'] = df['date'].astype(str)
 
-        plt.figure(figsize=(10, 5))
-        plt.plot(sorted_dates, avg_intensities, marker='o', linestyle='-', color='blue')
-        plt.title("Mood Intensity for the Current Week")
-        plt.xlabel("Date")
-        plt.ylabel("Average Intensity (1-5)")
-        plt.xticks(rotation=45)
-        plt.ylim(0, 5)
-        plt.grid(True, linestyle='--', alpha=0.7)
+        # Calculate daily average intensity
+        avg_intensity = df.groupby('date')['intensity'].mean().reset_index()
+
+        # Joint plot with scatter and bar plot
+        sns.set_theme(style="whitegrid")
+        joint_plot = sns.jointplot(
+            data=df,
+            x='date',
+            y='intensity',
+            kind='scatter',
+            height=8
+        )
+
+        # Overlay bar plot
+        sns.barplot(
+            data=avg_intensity,
+            x='date',
+            y='intensity',
+            alpha=0.5,
+            ax=joint_plot.ax_marg_x
+        )
+
+        # Customize plot titles and layout
+        joint_plot.ax_joint.set_xlabel("Date")
+        joint_plot.ax_joint.set_ylabel("Intensity (1-5)")
+        joint_plot.ax_marg_x.set_ylabel("Average Intensity")
+        joint_plot.ax_marg_y.set_xlabel("Frequency")
+
         plt.tight_layout()
+        joint_plot.figure.suptitle("Mood Intensity Timeline (Scatter + Bar)", y=1.02)
+        plt.subplots_adjust(top=0.9)  # If needed, adjust to make more space for the title
         plt.show()
 
     def display_mood_table(self):
@@ -261,6 +263,17 @@ class CognitiveDistortionAnalyzer:
         data = [(entry['mood'], entry['intensity']) for entry in self.user_data]
         df = pd.DataFrame(data, columns=['Mood', 'Intensity'])
         print(df.to_string(index=False))
+
+    def clear_user_data(self):
+        """
+        Clears all user data.
+        """
+        self.user_data = []
+        if os.path.exists('user_data.json'):
+            os.remove('user_data.json')
+        # Close all open figure windows
+        plt.close('all')
+        print("All user data has been cleared.")
 
 
 # User Input Handling Class
@@ -323,6 +336,7 @@ def main():
         'content': "Reflect on what's making you feel content and reinforce those positive habits or situations.",
         'overwhelmed': "Prioritize tasks by writing a to-do list, then tackle one thing at a time starting with the simplest."
     }
+
     print(f"Current Date/Time: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     analyzer = CognitiveDistortionAnalyzer()
     analyzer.load_distortions_data()
@@ -412,5 +426,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
