@@ -315,6 +315,18 @@ class UserInputHandler:
 # Main Program
 
 def main():
+    mood_advice = {
+        'happy': "Share your joy with someone or express gratitude by writing it down.",
+        'sad': "Engage in physical activity, like a workout or a brisk walk, to boost endorphins.",
+        'anxious': "Practice deep breathing exercises or write down what's causing your anxiety to organize your thoughts.",
+        'angry': "Meditate or channel your anger into a productive activity like cleaning or journaling.",
+        'neutral': "Try something new or stimulating, like reading an interesting article or learning a fun skill.",
+        'excited': "Channel your energy into planning or organizing the source of excitement, like setting goals or brainstorming ideas.",
+        'frustrated': "Take a short break, stretch, or listen to calming music to reset your mind.",
+        'confused': "Break down the problem into smaller parts or seek guidance from a trusted resource or person.",
+        'content': "Reflect on what's making you feel content and reinforce those positive habits or situations.",
+        'overwhelmed': "Prioritize tasks by writing a to-do list, then tackle one thing at a time starting with the simplest."
+    }
     print(f"Current Date/Time: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     analyzer = CognitiveDistortionAnalyzer()
     analyzer.load_distortions_data()
@@ -382,9 +394,9 @@ def main():
                     print(f"\n**{d_name.replace('_', ' ').title()}** detected in: \"{pattern}\"")
                     print(f"Explanation: {explanation}")
                 print("\nUnderstanding these patterns can help you process your thoughts more effectively.\n")
-            else:
-                print("\nThank you for sharing. It seems like you're processing your thoughts well today!\n")
 
+            print(f"\nHere's some advice based on your current mood ({mood}):")
+            print(mood_advice.get(mood, "Take some time to reflect on your feelings and consider what might help improve your mood."))
         elif cmd == 'visualize timeline':
             analyzer.visualize_user_mood_timeline()
         elif cmd == 'visualize chart':
@@ -397,3 +409,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
