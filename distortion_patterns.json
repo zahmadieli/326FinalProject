@@ -6,51 +6,69 @@
             "\\beveryone\\b",
             "\\bnobody\\b",
             "\\bnothing\\b",
-            "\\beverything\\b"
+            "\\beverything\\b",
+            "\\bno one\\b",
+            "\\bevery time\\b",
+            "\\ball the time\\b",
+            "\\bnobody ever\\b"
         ],
         "explanation": "Drawing broad conclusions based on a single event or insufficient evidence. For example, thinking 'I always fail at everything' after one setback."
     },
     "mind_reading": {
         "patterns": [
-            "they think",
-            "they believe",
-            "they feel",
-            "he thinks",
-            "she thinks",
-            "they must",
-            "people think"
+            "\\bthey think\\b",
+            "\\bthey believe\\b",
+            "\\bthey feel\\b",
+            "\\bhe thinks\\b",
+            "\\bshe thinks\\b",
+            "\\bthey must\\b",
+            "\\bpeople think\\b",
+            "\\bhe must\\b",
+            "\\bshe must\\b",
+            "\\bthey are probably thinking\\b",
+            "\\bI know what they are thinking\\b"
         ],
         "explanation": "Assuming you know what others are thinking without evidence. For example, believing 'They think I'm incompetent' without confirmation."
     },
     "emotional_reasoning": {
         "patterns": [
-            "I feel like",
-            "I feel that",
-            "because I feel",
-            "since I feel",
-            "it feels like"
+            "\\bI feel like\\b",
+            "\\bI feel that\\b",
+            "\\bbecause I feel\\b",
+            "\\bsince I feel\\b",
+            "\\bit feels like\\b",
+            "\\bmy feelings tell me\\b",
+            "\\bmy emotions say\\b",
+            "\\bif I feel it, it must be true\\b"
         ],
         "explanation": "Believing that feelings are facts. For example, 'I feel useless, so I must be useless.'"
     },
     "catastrophizing": {
         "patterns": [
-            "worst",
-            "disaster",
-            "terrible",
-            "horrible",
-            "ruined",
-            "can't stand it",
-            "end of the world"
+            "\\bworst\\b",
+            "\\bdisaster\\b",
+            "\\bterrible\\b",
+            "\\bhorrible\\b",
+            "\\bruined\\b",
+            "\\bcan't stand it\\b",
+            "\\bend of the world\\b",
+            "\\bunbearable\\b",
+            "\\bdevastating\\b",
+            "\\bno way out\\b",
+            "\\bcomplete failure\\b"
         ],
         "explanation": "Expecting the worst possible outcome. For example, 'If I make a mistake, my life will be ruined.'"
     },
     "personalization": {
         "patterns": [
-            "my fault",
-            "because of me",
-            "blame myself",
-            "it's on me",
-            "I caused"
+            "\\bmy fault\\b",
+            "\\bbecause of me\\b",
+            "\\bblame myself\\b",
+            "\\bit's on me\\b",
+            "\\bI caused\\b",
+            "\\bI made this happen\\b",
+            "\\bit's my responsibility\\b",
+            "\\bI brought this on\\b"
         ],
         "explanation": "Blaming yourself for events outside your control. For example, 'It's my fault that my team failed.'"
     },
@@ -60,7 +78,10 @@
             "\\bmust\\b",
             "\\bought to\\b",
             "\\bneed to\\b",
-            "\\bsupposed to\\b"
+            "\\bsupposed to\\b",
+            "\\bhave to\\b",
+            "\\bI should always\\b",
+            "\\bI must never\\b"
         ],
         "explanation": "Using rigid rules about how you or others should behave. For example, 'I should always be perfect.'"
     },
@@ -68,75 +89,56 @@
         "patterns": [
             "\\balways\\b",
             "\\bnever\\b",
-            "completely",
-            "perfect",
-            "failure",
-            "totally",
-            "either or",
-            "black and white"
+            "\\bcompletely\\b",
+            "\\bperfect\\b",
+            "\\bfailure\\b",
+            "\\btotally\\b",
+            "\\beither or\\b",
+            "\\bblack and white\\b",
+            "\\bno middle ground\\b",
+            "\\ball good or all bad\\b",
+            "\\bentirely\\b"
         ],
         "explanation": "Thinking in absolute terms, like 'always' or 'never.' For example, 'If I'm not a total success, I'm a failure.'"
     },
     "labeling": {
         "patterns": [
-            "I'm a failure",
-            "loser",
-            "stupid",
-            "idiot",
-            "worthless",
-            "incompetent"
+            "\\bI'm a failure\\b",
+            "\\bloser\\b",
+            "\\bstupid\\b",
+            "\\bidiot\\b",
+            "\\bworthless\\b",
+            "\\bincompetent\\b",
+            "\\bI'm dumb\\b",
+            "\\bI'm useless\\b"
         ],
         "explanation": "Assigning negative labels to yourself or others. For example, 'I'm a loser.'"
     },
     "disqualifying_the_positive": {
         "patterns": [
-            "doesn't count",
-            "wasn't good enough",
-            "just luck",
-            "anyone could have",
-            "nothing special"
+            "\\bdoesn't count\\b",
+            "\\bwasn't good enough\\b",
+            "\\bjust luck\\b",
+            "\\banyone could have\\b",
+            "\\bnothing special\\b",
+            "\\bit doesn't matter\\b",
+            "\\bit was easy\\b",
+            "\\bno big deal\\b"
         ],
         "explanation": "Rejecting positive experiences by insisting they 'don't count.' For example, 'I did well, but anyone could have.'"
     },
     "jumping_to_conclusions": {
         "patterns": [
-            "I know that",
-            "it's clear that",
-            "obviously",
-            "no doubt",
-            "she didn't reply",
-            "he ignored me"
+            "\\bI know that\\b",
+            "\\bit's clear that\\b",
+            "\\bobviously\\b",
+            "\\bno doubt\\b",
+            "\\bshe didn't reply\\b",
+            "\\bhe ignored me\\b",
+            "\\bI can tell\\b",
+            "\\bthey meant\\b",
+            "\\bthey are definitely\\b"
         ],
         "explanation": "Making negative interpretations without evidence. For example, 'She didn't reply, so she must be angry with me.'"
-    },
-    "magnification": {
-        "patterns": [
-            "huge problem",
-            "massive issue",
-            "overwhelming",
-            "unbearable",
-            "impossible to handle"
-        ],
-        "explanation": "Exaggerating the importance of negative events or minimizing the importance of positive ones."
-    },
-    "fortune_telling": {
-        "patterns": [
-            "I know it will",
-            "it's going to be",
-            "I'm sure that",
-            "there's no way",
-            "it's bound to"
-        ],
-        "explanation": "Predicting negative outcomes without sufficient evidence."
-    },
-    "mental_filter": {
-        "patterns": [
-            "focus on the bad",
-            "ignore the good",
-            "only remember",
-            "can't see past",
-            "fixate on"
-        ],
-        "explanation": "Focusing exclusively on negative aspects while ignoring positive ones."
     }
 }
