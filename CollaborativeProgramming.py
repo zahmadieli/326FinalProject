@@ -6,15 +6,53 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
+# Configuration Data
+
+MOOD_ADVICE = {
+    'happy': "Share your joy with someone or express gratitude by writing it down.",
+    'sad': "Engage in physical activity, like a workout or a brisk walk, to boost endorphins.",
+    'anxious': "Practice deep breathing exercises or write down what's causing your anxiety.",
+    'angry': "Meditate or channel your anger into a productive activity like journaling.",
+    'neutral': "Try something new or stimulating, such as reading an interesting article.",
+    'excited': "Channel your energy into planning or organizing the source of excitement.",
+    'frustrated': "Take a short break, stretch, or listen to calming music.",
+    'confused': "Break down the problem into smaller parts or seek guidance.",
+    'content': "Reflect on what's making you feel content and reinforce these habits.",
+    'overwhelmed': "Prioritize tasks by writing a to-do list, then tackle one at a time."
+}
+
+DISTORTION_ADVICE = {
+    'overgeneralization': "Try to identify one exception to your conclusion and focus on that.",
+    'emotional_reasoning': "Consider if your feelings are facts or if there's evidence that contradicts them.",
+    "mind_reading": "Ask yourself if you have evidence for what you think others believe.",
+    "catastrophizing": "Imagine a moderate outcome instead of the worst. List more realistic scenarios.",
+    "personalization": "Remember that not everything is in your control. Distribute responsibility fairly.",
+    "should_statements": "Examine your 'shoulds' and 'musts'. Are they realistic or fair?",
+    "all_or_nothing": "Seek shades of gray. Life is rarely all bad or all good.",
+    "labeling": "Focus on behavior or specific incidents instead of labeling your entire self.",
+    "disqualifying_the_positive": "Acknowledge your successes and positive aspects; they do count.",
+    "jumping_to_conclusions": "Gather more evidence before concluding what others think or intend."
+}
+
 # Distortion Classes
 
-class BaseDistortion:
+class Distortion:
     """
-    Abstract base class for a cognitive distortion.
+    Represents a cognitive distortion.
     Primary Author: John
     Techniques Claimed: magic methods (other than __init__) - __str__
     """
+
     def __init__(self, name, patterns, explanation):
+        """
+        Primary Author: John
+        Initializes a Distortion with name, patterns, and explanation.
+
+        Parameters:
+            name (str): Distortion name
+            patterns (list): Regex patterns characterizing the distortion
+            explanation (str): Explanation of the distortion
+        """
         self.name = name
         self.patterns = patterns
         self.explanation = explanation
@@ -23,29 +61,29 @@ class BaseDistortion:
         """
         Primary Author: John
         Technique: magic methods (other than __init__)
-        Returns a user-friendly string representation of the distortion.
+
+        Returns:
+            str: A user-friendly string representation of the distortion.
         """
         return f"Distortion: {self.name}\nExplanation: {self.explanation}"
 
     def match(self, text):
         """
-        Should be overridden by subclasses.
+        Checks if the given text matches any of the distortion's patterns.
+
+        Primary Author: John
+
+        Parameters:
+            text (str): The text to analyze.
+
+        Returns:
+            (bool, str): (True, pattern) if found, otherwise (False, None)
         """
-        raise NotImplementedError("Subclasses must implement 'match'.")
-
-class OvergeneralizationDistortion(BaseDistortion):
-    def match(self, text):
         for pattern in self.patterns:
             if re.search(pattern, text, re.IGNORECASE):
                 return True, pattern
         return False, None
 
-class EmotionalReasoningDistortion(BaseDistortion):
-    def match(self, text):
-        for pattern in self.patterns:
-            if re.search(pattern, text, re.IGNORECASE):
-                return True, pattern
-        return False, None
 
 # Analyzer Class
 
@@ -53,31 +91,35 @@ class CognitiveDistortionAnalyzer:
     """
     Analyzes user input for cognitive distortions and handles user data.
 
-    Composition: Holds a list of BaseDistortion instances.
+    Composition: Holds a list of Distortion instances.
     """
 
     def __init__(self):
+        """
+        Initializes with empty distortion data and user data.
+        """
         self.distortions_data = {}
         self.user_data = []
         self.distortions = []
 
     def load_distortions_data(self):
         """
-        Loads cognitive distortions from 'distortion_patterns.json' and sets up distortion objects.
+        Loads cognitive distortions from 'distortion_patterns.json' and creates Distortion objects.
 
         Primary Author: Josh
         Techniques: with statements, comprehensions
+
+        Side Effects:
+            - Reads from 'distortion_patterns.json'.
+            - Updates self.distortions_data and self.distortions.
         """
         try:
             with open('distortion_patterns.json', 'r') as file:
                 data = json.load(file)
                 self.distortions_data = data
 
-            # Build distortion objects using comprehension
             self.distortions = [
-                OvergeneralizationDistortion(name=k, patterns=v["patterns"], explanation=v["explanation"])
-                if k == "overgeneralization" else
-                EmotionalReasoningDistortion(name=k, patterns=v["patterns"], explanation=v["explanation"])
+                Distortion(name=k, patterns=v["patterns"], explanation=v["explanation"])
                 for k, v in data.items()
             ]
         except FileNotFoundError:
@@ -86,6 +128,15 @@ class CognitiveDistortionAnalyzer:
             print("Error: 'distortion_patterns.json' is not valid JSON.")
 
     def analyze_text(self, text):
+        """
+        Analyzes text for cognitive distortions.
+
+        Parameters:
+            text (str): The user's input text.
+
+        Returns:
+            list of (distortion_name, pattern)
+        """
         detected_distortions = []
         sentences = re.split(r'[.!?]', text)
         for sentence in sentences:
@@ -95,7 +146,6 @@ class CognitiveDistortionAnalyzer:
             for d in self.distortions:
                 found, pattern = d.match(sentence)
                 if found:
-                    # Remove \b word boundaries for display
                     display_pattern = re.sub(r'\\b', '', pattern)
                     detected_distortions.append((d.name, display_pattern))
         return detected_distortions
@@ -106,6 +156,13 @@ class CognitiveDistortionAnalyzer:
 
         Primary Author: Zainab
         Techniques: regular expressions
+
+        Parameters:
+            text (str): The input text
+            strict (bool): Use stricter patterns if True
+
+        Returns:
+            bool: True if suicidal phrases are detected, else False.
         """
         suicidal_patterns = [
             "kill myself", "want to die", "suicidal", "end my life",
@@ -126,7 +183,14 @@ class CognitiveDistortionAnalyzer:
         Primary Author: Zainab
         Technique: optional parameters/keyword arguments
 
-        Non-trivial logic: Check absolute terms and unrealistic phrases. Intensity > 1 makes it stricter.
+        Non-trivial logic: Checks absolute and unrealistic terms. Severity increases if both are present and intensity > 1.
+
+        Parameters:
+            text (str)
+            intensity (int): Strictness level
+
+        Returns:
+            int: Severity level (0,1,2)
         """
         words = text.lower().split()
         absolute_terms = {"always", "never", "forever", "everything", "nothing"}
@@ -140,9 +204,18 @@ class CognitiveDistortionAnalyzer:
 
     def add_user_entry(self, mood, responses, intensity):
         """
-        Adds a user entry with mood, responses, intensity and detected distortions.
+        Adds a user entry with mood, responses, intensity, and detected distortions.
 
-        Intensity is a numeric value (1-5).
+        Side Effects:
+            - Appends entry to self.user_data.
+
+        Parameters:
+            mood (str)
+            responses (list of str)
+            intensity (int)
+
+        Returns:
+            (list, str): (distortions, combined_text)
         """
         combined_text = ' '.join(responses)
         distortions = self.analyze_text(combined_text)
@@ -158,10 +231,13 @@ class CognitiveDistortionAnalyzer:
 
     def save_user_data(self):
         """
-        Saves user_data to a JSON file.
+        Saves user_data to 'user_data.json'.
 
         Primary Author: John
         Technique: json.dump()
+
+        Side Effects:
+            - Writes to 'user_data.json'
         """
         try:
             with open('user_data.json', 'w') as f:
@@ -170,6 +246,12 @@ class CognitiveDistortionAnalyzer:
             print(f"Error saving user data: {e}")
 
     def load_user_data(self):
+        """
+        Loads user_data from 'user_data.json' if it exists.
+
+        Side Effects:
+            - Updates self.user_data if file is found.
+        """
         if os.path.exists('user_data.json'):
             try:
                 with open('user_data.json', 'r') as f:
@@ -180,39 +262,16 @@ class CognitiveDistortionAnalyzer:
         else:
             self.user_data = []
 
-    def aggregate_distortion_statistics(self):
-        """
-        Aggregates frequency of detected distortions from user_data.
-
-        Primary Author: Josh
-        Technique: comprehensions
-        """
-        all_distortions = [d for entry in self.user_data for d in entry['distortions']]
-        counts = {}
-        for dist in all_distortions:
-            counts[dist] = counts.get(dist, 0) + 1
-        return counts
-
-    def get_emotion_distribution(self):
-        """
-        Calculates the distribution of emotions for the current week.
-        """
-        today = datetime.date.today()
-        start_of_week = today - datetime.timedelta(days=today.weekday())
-        end_of_week = start_of_week + datetime.timedelta(days=6)
-
-        emotion_counts = {}
-        for entry in self.user_data:
-            ts = datetime.datetime.fromisoformat(entry['timestamp'])
-            day = ts.date()
-            if start_of_week <= day <= end_of_week:
-                mood = entry['mood']
-                emotion_counts[mood] = emotion_counts.get(mood, 0) + 1
-        return emotion_counts
-
     def visualize_user_mood_timeline(self):
         """
-        Visualizes mood entries as a scatter plot and overlays average intensity as a bar plot.
+        Visualizes mood entries as a scatter plot over the current week, 
+        showing mood intensity by date and emotion.
+
+        Primary Author: Josh 
+        Techniques: visualizing data with pyplot or seaborn
+
+        Side Effects:
+            - Displays a matplotlib figure window.
         """
         if not self.user_data:
             print("No user data to visualize.")
@@ -222,7 +281,6 @@ class CognitiveDistortionAnalyzer:
         start_of_week = today - datetime.timedelta(days=today.weekday())
         end_of_week = start_of_week + datetime.timedelta(days=6)
 
-        # Collect data for the current week
         mood_entries = []
         for entry in self.user_data:
             ts = datetime.datetime.fromisoformat(entry['timestamp'])
@@ -234,48 +292,26 @@ class CognitiveDistortionAnalyzer:
             print("No data in the current week to visualize.")
             return
 
-        # Convert to DataFrame for Seaborn plotting
         df = pd.DataFrame(mood_entries)
-        
-        # Convert 'date' column to string to avoid type issues in plotting
         df['date'] = df['date'].astype(str)
 
-        # Calculate daily average intensity
-        avg_intensity = df.groupby('date')['intensity'].mean().reset_index()
-
-        # Joint plot with scatter and bar plot
         sns.set_theme(style="whitegrid")
-        joint_plot = sns.jointplot(
-            data=df,
-            x='date',
-            y='intensity',
-            kind='scatter',
-            height=8
-        )
+        plt.figure(figsize=(10, 6))
+        sns.scatterplot(data=df, x='date', y='intensity', hue='mood', s=100)
 
-        # Overlay bar plot
-        sns.barplot(
-            data=avg_intensity,
-            x='date',
-            y='intensity',
-            alpha=0.5,
-            ax=joint_plot.ax_marg_x
-        )
-
-        # Customize plot titles and layout
-        joint_plot.ax_joint.set_xlabel("Date")
-        joint_plot.ax_joint.set_ylabel("Intensity (1-5)")
-        joint_plot.ax_marg_x.set_ylabel("Average Intensity")
-        joint_plot.ax_marg_y.set_xlabel("Frequency")
-
+        plt.xlabel("Date")
+        plt.ylabel("Intensity (1-5)")
+        plt.title("Weekly Mood Intensity by Day and Emotion")
+        plt.xticks(rotation=45)
         plt.tight_layout()
-        joint_plot.figure.suptitle("Mood Intensity Timeline (Scatter + Bar)", y=1.02)
-        plt.subplots_adjust(top=0.9)  # If needed, adjust to make more space for the title
         plt.show()
 
     def display_mood_table(self):
         """
-        Displays a table of moods and their corresponding intensity using pandas.
+        Displays a table of moods and their intensities.
+
+        Side Effects:
+            - Prints a DataFrame to console.
         """
         if not self.user_data:
             print("No user data available to display.")
@@ -287,23 +323,43 @@ class CognitiveDistortionAnalyzer:
 
     def clear_user_data(self):
         """
-        Clears all user data.
+        Clears all user data and removes 'user_data.json' if present.
 
-        Adding plt.close('all') to close any open figure windows.
+        Side Effects:
+            - Clears self.user_data
+            - Deletes 'user_data.json'
+            - Closes all matplotlib figures
         """
         self.user_data = []
         if os.path.exists('user_data.json'):
             os.remove('user_data.json')
-        plt.close('all')  # Close all open figures
+        plt.close('all')
         print("All user data has been cleared.")
 
 # User Input Handling Class
 
 class UserInputHandler:
+    """
+    Handles user input for moods and guided questions.
+    Primary Author: [Team collectively, no claimed technique here]
+    """
+
     def __init__(self):
+        """
+        Initializes with a list of predefined moods.
+        """
         self.moods = ['happy', 'sad', 'anxious', 'angry', 'neutral', 'excited', 'frustrated', 'confused', 'content', 'overwhelmed']
 
     def select_mood(self):
+        """
+        Allows the user to select a mood from a predefined list or enter their own.
+
+        Side Effects:
+            - Prints instructions and reads user input.
+
+        Returns:
+            str: The chosen mood.
+        """
         print("\nHow are you feeling today? You can select one of the following moods or enter your own:")
         for idx, mood in enumerate(self.moods, 1):
             print(f"{idx}. {mood.capitalize()}")
@@ -322,6 +378,20 @@ class UserInputHandler:
             print("Invalid input. Please try again.")
 
     def ask_controlled_question(self, prompt, options):
+        """
+        Asks the user a multiple-choice question.
+
+        Side Effects:
+            - Prints prompt and options
+            - Reads user input
+
+        Parameters:
+            prompt (str)
+            options (list)
+
+        Returns:
+            str: The selected option.
+        """
         print(prompt)
         for i, opt in enumerate(options, 1):
             print(f"{i}. {opt}")
@@ -334,6 +404,19 @@ class UserInputHandler:
             print("Invalid choice. Please enter a valid number.")
 
     def ask_scaled_question(self, prompt):
+        """
+        Asks the user for a number (1-5) to represent intensity.
+
+        Side Effects:
+            - Prints prompt
+            - Reads user input
+
+        Parameters:
+            prompt (str)
+
+        Returns:
+            int: The intensity rating.
+        """
         while True:
             scale = input(prompt + " (1-5): ").strip()
             if scale.isdigit():
@@ -345,18 +428,16 @@ class UserInputHandler:
 # Main Program
 
 def main():
-    mood_advice = {
-        'happy': "Share your joy with someone or express gratitude by writing it down.",
-        'sad': "Engage in physical activity, like a workout or a brisk walk, to boost endorphins.",
-        'anxious': "Practice deep breathing exercises or write down what's causing your anxiety to organize your thoughts.",
-        'angry': "Meditate or channel your anger into a productive activity like cleaning or journaling.",
-        'neutral': "Try something new or stimulating, like reading an interesting article or learning a fun skill.",
-        'excited': "Channel your energy into planning or organizing the source of excitement, like setting goals or brainstorming ideas.",
-        'frustrated': "Take a short break, stretch, or listen to calming music to reset your mind.",
-        'confused': "Break down the problem into smaller parts or seek guidance from a trusted resource or person.",
-        'content': "Reflect on what's making you feel content and reinforce those positive habits or situations.",
-        'overwhelmed': "Prioritize tasks by writing a to-do list, then tackle one thing at a time starting with the simplest."
-    }
+    """
+    The main program loop for the Cognitive Distortion Analyzer.
+
+    Side Effects:
+        - Prints to console
+        - Reads user input
+        - Calls methods that read/write files
+        - Displays plots
+        - Modifies user_data
+    """
 
     print(f"Current Date/Time: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     analyzer = CognitiveDistortionAnalyzer()
@@ -384,7 +465,7 @@ def main():
         elif cmd == 'start':
             mood = ui.select_mood()
             responses = []
-            # For demonstration, if mood is happy, do controlled question else just ask a reason
+            # If mood is happy, prompt a controlled question
             if mood == 'happy':
                 reason = ui.ask_controlled_question(
                     "Why are you feeling happy?",
@@ -401,7 +482,6 @@ def main():
                 reason = input(f"What made you feel {mood} today? (Keep it brief): ")
                 responses.append(reason)
 
-            # Ask a scaled question about intensity
             intensity = ui.ask_scaled_question(f"On a scale of 1-5, how intense is this {mood} feeling?")
 
             combined_text = ' '.join(responses)
@@ -411,7 +491,6 @@ def main():
                 print("Please consider reaching out to a mental health professional or trusted individual for support.\n")
                 continue
 
-            # Filter unrealistic statements
             severity = analyzer.filter_unrealistic_statements(combined_text, intensity=2)
             if severity > 1:
                 print("\nWe've noticed some absolute or unrealistic expectations in your response.")
@@ -425,10 +504,13 @@ def main():
                     explanation = info.get('explanation', "No explanation available.")
                     print(f"\n**{d_name.replace('_', ' ').title()}** detected in: \"{pattern}\"")
                     print(f"Explanation: {explanation}")
+                    extra_advice = DISTORTION_ADVICE.get(d_name, "")
+                    if extra_advice:
+                        print(f"Try this: {extra_advice}")
                 print("\nUnderstanding these patterns can help you process your thoughts more effectively.\n")
 
             print(f"\nHere's some advice based on your current mood ({mood}):")
-            print(mood_advice.get(mood, "Take some time to reflect on your feelings and consider what might help improve your mood."))
+            print(MOOD_ADVICE.get(mood, "Take some time to reflect on your feelings and consider what might help improve your mood."))
         elif cmd == 'visualize timeline':
             analyzer.visualize_user_mood_timeline()
         elif cmd == 'table':
@@ -444,6 +526,7 @@ def main():
                 print("Data clearing cancelled.")
         else:
             print("Invalid command. Type 'help' for instructions.\n")
+
 
 if __name__ == "__main__":
     main()
