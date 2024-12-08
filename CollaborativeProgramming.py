@@ -4,9 +4,9 @@ import datetime
 import os
 import matplotlib.pyplot as plt
 import pandas as pd
-import seaborn as sns
 
 # Configuration Data
+
 
 MOOD_ADVICE = {
     'happy': "Share your joy with someone or express gratitude by writing it down.",
@@ -34,11 +34,11 @@ DISTORTION_ADVICE = {
     "jumping_to_conclusions": "Gather more evidence before concluding what others think or intend."
 }
 
-# Distortion Classes
+# Distortion Class
 
 class Distortion:
     """
-    Represents a cognitive distortion.
+    Represents a single cognitive distortion, including its identifying regex patterns and an explanation.
     Primary Author: John
     Techniques Claimed: magic methods (other than __init__) - __str__
     """
@@ -46,15 +46,17 @@ class Distortion:
     def __init__(self, name, patterns, explanation):
         """
         Primary Author: John
-        Initializes a Distortion with name, patterns, and explanation.
+        No techniques claimed here.
 
-        Side Effects:
-            - Sets instance attributes: name, patterns, explanation.
+        Initializes a Distortion instance with a descriptive name, associated regex patterns, and a helpful explanation.
 
         Parameters:
-            name (str): Distortion name
-            patterns (list): Regex patterns characterizing the distortion
-            explanation (str): Explanation of the distortion
+            name (str): The name of the distortion.
+            patterns (list of str): Regex patterns for the distortion.
+            explanation (str): Explanation of the distortion.
+
+        Side Effects:
+            - Assigns instance attributes: name, patterns, explanation.
         """
         self.name = name
         self.patterns = patterns
@@ -63,10 +65,7 @@ class Distortion:
     def __str__(self):
         """
         Primary Author: John
-        Technique: magic methods (other than __init__)
-
-        Side Effects:
-            - None.
+        Technique claimed: magic methods (other than __init__)
 
         Returns:
             str: A user-friendly string representation of the distortion.
@@ -75,18 +74,19 @@ class Distortion:
 
     def match(self, text):
         """
-        Checks if the given text matchse any of the distortion's patterns.
-
-        Side Effects:
-            - None.
-
         Primary Author: John
+        No techniques claimed here.
 
+        Checks if the given text contains any of the distortion's regex patterns.
+        
         Parameters:
-            text (str): The text to analyze.
+            text (str): The user input to analyze.
 
         Returns:
-            (bool, str): (True, pattern) if found, otherwise (False, None)
+            (bool, str): (True, pattern) if a match is found, otherwise (False, None).
+        
+        Side Effects:
+            - None
         """
         for pattern in self.patterns:
             if re.search(pattern, text, re.IGNORECASE):
@@ -94,18 +94,24 @@ class Distortion:
         return False, None
 
 
-# Analyzer Class
+# CognitiveDistortionAnalyzer Class
 
 class CognitiveDistortionAnalyzer:
     """
-    Analyzes user input for cognitive distortions and handles user data.
+    Analyzes user input for cognitive distortions and manages user data entries.
 
     Composition: Holds a list of Distortion instances.
     """
 
     def __init__(self):
         """
-        Initializes with empty distortion data and user data.
+        Primary Author: Team collectively
+        No techniques claimed here.
+
+        Initializes the analyzer with empty data structures.
+        
+        Side Effects:
+            - Sets self.distortions_data, self.user_data, and self.distortions to empty.
         """
         self.distortions_data = {}
         self.user_data = []
@@ -113,14 +119,14 @@ class CognitiveDistortionAnalyzer:
 
     def load_distortions_data(self):
         """
-        Loads cognitive distortions from 'distortion_patterns.json' and creates Distortion objects.
-
         Primary Author: Josh
-        Techniques: with statements, comprehensions
+        Techniques claimed: with statements, comprehensions
+
+        Loads distortion definitions from 'distortion_patterns.json' and builds Distortion objects.
 
         Side Effects:
-            - Reads from 'distortion_patterns.json'.
-            - Updates self.distortions_data and self.distortions.
+            - Reads from 'distortion_patterns.json'
+            - Updates self.distortions_data and self.distortions
         """
         try:
             with open('distortion_patterns.json', 'r') as file:
@@ -134,17 +140,23 @@ class CognitiveDistortionAnalyzer:
         except FileNotFoundError:
             print("Error: 'distortion_patterns.json' not found.")
         except json.JSONDecodeError:
-            print("Error: 'distortion_patterns.json' is not valid JSON.")
+            print("Error: 'distortion_patterns.json' isn't a valid JSON file.")
 
     def analyze_text(self, text):
         """
-        Analyzes text for cognitive distortions.
+        Primary Author: Team collectively
+        No techniques claimed here.
+
+        Examines the given text for distortions by checking each sentence against known patterns.
 
         Parameters:
             text (str): The user's input text.
 
         Returns:
-            list of (distortion_name, pattern)
+            list of (str, str): Distortion name and the matched pattern.
+
+        Side Effects:
+            - None
         """
         detected_distortions = []
         sentences = re.split(r'[.!?]', text)
@@ -161,17 +173,20 @@ class CognitiveDistortionAnalyzer:
 
     def detect_suicidal_thoughts(self, text, strict=False):
         """
-        Detects references to suicidal thoughts in the input text.
-
         Primary Author: Zainab
-        Techniques: regular expressions
+        Techniques claimed: regular expressions
+
+        Checks text for suicidal ideation terms, optionally using stricter criteria.
 
         Parameters:
-            text (str): The input text
-            strict (bool): Use stricter patterns if True
+            text (str)
+            strict (bool)
 
         Returns:
-            bool: True if suicidal phrases are detected, else False.
+            bool: True if suicidal patterns are found.
+
+        Side Effects:
+            - None
         """
         suicidal_patterns = [
             "kill myself", "want to die", "suicidal", "end my life",
@@ -187,19 +202,20 @@ class CognitiveDistortionAnalyzer:
 
     def filter_unrealistic_statements(self, text, intensity=1):
         """
-        Filters out unrealistic or absolute statements.
-
         Primary Author: Zainab
-        Technique: optional parameters/keyword arguments
+        Techniques claimed: optional parameters/keyword arguments
 
-        Non-trivial logic: Checks absolute and unrealistic terms. Severity increases if both are present and intensity > 1.
+        Evaluates text for absolute or unrealistic statements, with 'intensity' influencing strictness.
 
         Parameters:
             text (str)
-            intensity (int): Strictness level
+            intensity (int)
 
         Returns:
             int: Severity level (0,1,2)
+
+        Side Effects:
+            - None
         """
         words = text.lower().split()
         absolute_terms = {"always", "never", "forever", "everything", "nothing"}
@@ -213,10 +229,10 @@ class CognitiveDistortionAnalyzer:
 
     def add_user_entry(self, mood, responses, intensity):
         """
-        Adds a user entry with mood, responses, intensity, and detected distortions.
+        Primary Author: Team collectively
+        No techniques claimed here.
 
-        Side Effects:
-            - Appends entry to self.user_data.
+        Records a new user entry, including mood, responses, intensity, and detected distortions.
 
         Parameters:
             mood (str)
@@ -224,7 +240,10 @@ class CognitiveDistortionAnalyzer:
             intensity (int)
 
         Returns:
-            (list, str): (distortions, combined_text)
+            (list, str): (detected_distortions, combined_text)
+
+        Side Effects:
+            - Modifies self.user_data
         """
         combined_text = ' '.join(responses)
         distortions = self.analyze_text(combined_text)
@@ -240,10 +259,10 @@ class CognitiveDistortionAnalyzer:
 
     def save_user_data(self):
         """
-        Saves user_data to 'user_data.json'.
-
         Primary Author: John
-        Technique: json.dump()
+        Technique claimed: json.dump()
+
+        Saves user_data to 'user_data.json'.
 
         Side Effects:
             - Writes to 'user_data.json'
@@ -256,10 +275,13 @@ class CognitiveDistortionAnalyzer:
 
     def load_user_data(self):
         """
-        Loads user_data from 'user_data.json' if it exists.
+        Primary Author: Team collectively
+        No techniques claimed here.
+
+        Loads existing user data from 'user_data.json', if present.
 
         Side Effects:
-            - Updates self.user_data if file is found.
+            - Updates self.user_data
         """
         if os.path.exists('user_data.json'):
             try:
@@ -273,11 +295,17 @@ class CognitiveDistortionAnalyzer:
 
     def visualize_user_mood_timeline(self):
         """
-        Visualizes mood entries as a scatter plot over the current week, 
-        showing mood intensity by date and emotion.
+        Primary Author: Josh
+        Techniques claimed: visualizing data with pyplot 
 
-        Primary Author: Josh 
-        Techniques: visualizing data with pyplot or seaborn
+        Shows a scatter plot of mood intensity over the current week, with different colors for each mood.
+        This method uses matplotlib only to generate a clear, color-coded scatter plot.
+
+        Parameters:
+            None
+
+        Returns:
+            None
 
         Side Effects:
             - Displays a matplotlib figure window.
@@ -295,7 +323,11 @@ class CognitiveDistortionAnalyzer:
             ts = datetime.datetime.fromisoformat(entry['timestamp'])
             day = ts.date()
             if start_of_week <= day <= end_of_week:
-                mood_entries.append({'date': day, 'intensity': entry['intensity'], 'mood': entry['mood']})
+                mood_entries.append({
+                    'date': day,
+                    'intensity': entry['intensity'],
+                    'mood': entry['mood']
+                })
 
         if not mood_entries:
             print("No data in the current week to visualize.")
@@ -304,23 +336,32 @@ class CognitiveDistortionAnalyzer:
         df = pd.DataFrame(mood_entries)
         df['date'] = df['date'].astype(str)
 
-        sns.set_theme(style="whitegrid")
-        plt.figure(figsize=(10, 6))
-        sns.scatterplot(data=df, x='date', y='intensity', hue='mood', s=100)
+        fig, ax = plt.subplots(figsize=(10, 6))
 
-        plt.xlabel("Date")
-        plt.ylabel("Intensity (1-5)")
-        plt.title("Weekly Mood Intensity by Day and Emotion")
+        unique_moods = df['mood'].unique()
+        colors = plt.cm.get_cmap('tab10', len(unique_moods))
+
+        for i, mood_cat in enumerate(unique_moods):
+            subset = df[df['mood'] == mood_cat]
+            ax.scatter(subset['date'], subset['intensity'], label=mood_cat, color=colors(i), s=100)
+
+        ax.set_xlabel("Date")
+        ax.set_ylabel("Intensity (1-5)")
+        ax.set_title("Weekly Mood Intensity by Day and Emotion")
         plt.xticks(rotation=45)
         plt.tight_layout()
+        ax.legend(title="Mood")
         plt.show()
 
     def display_mood_table(self):
         """
-        Displays a table of moods and their intensities.
+        Primary Author: Josh
+        No techniques claimed here.
+
+        Prints a table of recorded moods and their intensities using pandas.
 
         Side Effects:
-            - Prints a DataFrame to console.
+            - Prints a table to console
         """
         if not self.user_data:
             print("No user data available to display.")
@@ -332,12 +373,15 @@ class CognitiveDistortionAnalyzer:
 
     def clear_user_data(self):
         """
-        Clears all user data and removes 'user_data.json' if present.
+        Primary Author: Team collectively
+        No techniques claimed here.
+
+        Clears all user data and removes any existing 'user_data.json', and closes all figure windows.
 
         Side Effects:
-            - Clears self.user_data
-            - Deletes 'user_data.json'
-            - Closes all matplotlib figures
+            - Empties self.user_data
+            - Deletes user_data.json if present
+            - Closes matplotlib figures
         """
         self.user_data = []
         if os.path.exists('user_data.json'):
@@ -349,19 +393,29 @@ class CognitiveDistortionAnalyzer:
 
 class UserInputHandler:
     """
-    Handles user input for moods and guided questions.
-    Primary Author: [Team collectively, no claimed technique here]
+    Manages user interactions related to selecting moods and responding to guided questions.
+    Primary Author: Team collectively
+    No techniques claimed here.
     """
 
     def __init__(self):
         """
-        Initializes with a list of predefined moods.
+        Primary Author: Team collectively
+        No techniques claimed here.
+
+        Initializes with a predefined list of moods.
+        
+        Side Effects:
+            - Sets self.moods
         """
         self.moods = ['happy', 'sad', 'anxious', 'angry', 'neutral', 'excited', 'frustrated', 'confused', 'content', 'overwhelmed']
 
     def select_mood(self):
         """
-        Allows the user to select a mood from a predefined list or enter their own.
+        Primary Author: Team collectively
+        No techniques claimed here.
+
+        Lets the user pick a mood from a list or provide a custom one.
 
         Side Effects:
             - Prints instructions and reads user input.
@@ -388,18 +442,20 @@ class UserInputHandler:
 
     def ask_controlled_question(self, prompt, options):
         """
-        Asks the user a multiple-choice question.
+        Primary Author: Team collectively
+        No techniques claimed here.
+
+        Presents a multiple-choice question and returns the user's choice.
 
         Side Effects:
-            - Prints prompt and options
-            - Reads user input
-
+            - Prints prompt and reads user input.
+        
         Parameters:
             prompt (str)
-            options (list)
+            options (list of str)
 
         Returns:
-            str: The selected option.
+            str: The chosen option.
         """
         print(prompt)
         for i, opt in enumerate(options, 1):
@@ -414,15 +470,17 @@ class UserInputHandler:
 
     def ask_scaled_question(self, prompt):
         """
-        Asks the user for a number (1-5) to represent intensity.
+        Primary Author: Team collectively
+        No techniques claimed here.
+
+        Asks the user for an integer rating between 1 and 5.
 
         Side Effects:
-            - Prints prompt
-            - Reads user input
+            - Prints prompt and reads user input.
 
         Parameters:
             prompt (str)
-
+        
         Returns:
             int: The intensity rating.
         """
@@ -438,14 +496,17 @@ class UserInputHandler:
 
 def main():
     """
-    The main program loop for the Cognitive Distortion Analyzer.
+    Primary Author: Team collectively
+    No techniques claimed here.
+
+    Runs the user interface loop, allowing the user to record moods, analyze distortions, visualize data, and manage entries.
 
     Side Effects:
-        - Prints to console
-        - Reads user input
-        - Calls methods that read/write files
-        - Displays plots
-        - Modifies user_data
+        - Prints to console.
+        - Reads user input.
+        - Performs file I/O.
+        - Displays plots.
+        - Modifies user_data.
     """
 
     print(f"Current Date/Time: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
@@ -474,7 +535,6 @@ def main():
         elif cmd == 'start':
             mood = ui.select_mood()
             responses = []
-            # If mood is happy, prompt a controlled question
             if mood == 'happy':
                 reason = ui.ask_controlled_question(
                     "Why are you feeling happy?",
@@ -539,3 +599,13 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# Methods and Functions Attribution Table
+# Method/function                                 Primary author   Techniques demonstrated
+# Distortion.__str__                              John             magic methods (other than __init__)
+# CognitiveDistortionAnalyzer.load_distortions_data  Josh           with statements, comprehensions
+# CognitiveDistortionAnalyzer.detect_suicidal_thoughts Zainab       regular expressions
+# CognitiveDistortionAnalyzer.filter_unrealistic_statements Zainab  optional parameters/keyword arguments
+# CognitiveDistortionAnalyzer.save_user_data       John            json.dump()
+# CognitiveDistortionAnalyzer.visualize_user_mood_timeline Josh     visualizing data with pyplot
