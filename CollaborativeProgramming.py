@@ -48,6 +48,9 @@ class Distortion:
         Primary Author: John
         Initializes a Distortion with name, patterns, and explanation.
 
+        Side Effects:
+            - Sets instance attributes: name, patterns, explanation.
+
         Parameters:
             name (str): Distortion name
             patterns (list): Regex patterns characterizing the distortion
@@ -62,6 +65,9 @@ class Distortion:
         Primary Author: John
         Technique: magic methods (other than __init__)
 
+        Side Effects:
+            - None.
+
         Returns:
             str: A user-friendly string representation of the distortion.
         """
@@ -69,7 +75,10 @@ class Distortion:
 
     def match(self, text):
         """
-        Checks if the given text matches any of the distortion's patterns.
+        Checks if the given text matchse any of the distortion's patterns.
+
+        Side Effects:
+            - None.
 
         Primary Author: John
 
