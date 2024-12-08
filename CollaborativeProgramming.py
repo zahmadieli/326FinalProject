@@ -601,11 +601,3 @@ if __name__ == "__main__":
     main()
 
 
-# Methods and Functions Attribution Table
-# Method/function                                 Primary author   Techniques demonstrated
-# Distortion.__str__                              John             magic methods (other than __init__)
-# CognitiveDistortionAnalyzer.load_distortions_data  Josh           with statements, comprehensions
-# CognitiveDistortionAnalyzer.detect_suicidal_thoughts Zainab       regular expressions
-# CognitiveDistortionAnalyzer.filter_unrealistic_statements Zainab  optional parameters/keyword arguments
-# CognitiveDistortionAnalyzer.save_user_data       John            json.dump()
-# CognitiveDistortionAnalyzer.visualize_user_mood_timeline Josh     visualizing data with pyplot
